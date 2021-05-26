@@ -13,6 +13,10 @@ public:
     void SomethingChanged() {
         std::cout << "The observable has changed!" << std::endl;
     }
+
+    void SomethingChanged(int value) {
+        std::cout << "The observable value " << value << " has changed!" << std::endl;
+    }
 };
 
 class Observable
@@ -27,15 +31,18 @@ public:
         ++m_value;
         std::cout << "Value has changed: " << std::to_string(m_value) << std::endl;
         m_signal();
+        m_signal_with_int(m_value);
 
     }
     void AddObserver(const Observer& observer) {
         m_signal.connect(boost::bind(&Observer::SomethingChanged, observer));
+        m_signal_with_int.connect(boost::bind(&Observer::SomethingChanged, observer, _1));
     }
 
 private:
     int m_value;
     boost::signals2::signal<void ()>    m_signal;
+    boost::signals2::signal<void (int)>    m_signal_with_int;
 };
 
 int main() {
